@@ -10,7 +10,7 @@ export function showSuccess(message: string) {
       icon: 'success',
       title: 'Success!',
       text: message,
-      timer: 1000,
+      timer: 2000,
       showConfirmButton: false,
     })
   )

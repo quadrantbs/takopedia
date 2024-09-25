@@ -1,3 +1,4 @@
+import ProtectedComponent from '@/components/auth/ProtectedComponent';
 import React from 'react';
 
 export default function WishlistLayout({
@@ -6,8 +7,10 @@ export default function WishlistLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div>
+        <>
+            <ProtectedComponent>
             {children}
-        </div>
+            </ProtectedComponent>
+        </>
     );
 }

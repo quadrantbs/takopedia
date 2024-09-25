@@ -5,23 +5,22 @@
 import { useState, useEffect } from 'react';
 import ProductList from '@/components/products/ProductList';
 import ProductSearch from '@/components/products/ProductSearch';
-import { product } from '@/components/home/FeaturedProducts';
+import { ProductTypes } from '@/types';
 
 export default function ProductsPage() {
-    const [products, setProducts] = useState<product[]>([]);
+    const [products, setProducts] = useState<ProductTypes[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [filteredProducts, setFilteredProducts] = useState<product[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<ProductTypes[]>([]);
 
     async function fetchProducts() {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3001/products`, { cache: "no-store" });
+            const response = await fetch(`http://localhost:3000/api/products`);
             if (!response.ok) {
                 throw new Error('Failed to fetch products.');
             }
             const data = await response.json();
-            console.log(data);
             setProducts(data);
             setFilteredProducts(data);
         } catch (error) {

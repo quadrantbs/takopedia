@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { showSuccess } from '@/utils/alerts';
+import { showError, showSuccess } from '@/utils/alerts';
 import Link from 'next/link';
+import { saveCookies } from '@/utils/actions';
 
 export default function LoginForm() {
     const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ export default function LoginForm() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3001/auth/login', {
+            const response = await fetch('http://localhost:3000/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,14 +26,19 @@ export default function LoginForm() {
             });
 
             if (!response.ok) {
-                throw new Error('Login failed. Please check your credentials.');
+                const data = await response.json();
+                return showError(data)
             }
 
             const data = await response.json();
-            showSuccess('Login successful!');
-            console.log(data);
-            router.push('/home');
 
+            await saveCookies(data.token)
+
+            showSuccess(data.message);
+
+            router.push('/');
+        } catch (error) {
+            console.log(error)
         } finally {
             setLoading(false);
         }

@@ -2,22 +2,21 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { ProductTypes } from "@/types";
+import { useState, useEffect, MouseEvent } from "react";
 
-interface WishlistButtonProps {
-    productSlug: string;
-}
 
-export default function WishlistButton({ productSlug }: WishlistButtonProps) {
+export default function WishlistButton({ product }: { product: ProductTypes }) {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [loading, setLoading] = useState(false);
-
     useEffect(() => {
         async function checkWishlist() {
             try {
-                const response = await fetch(`http://localhost:3001/wishlist?slug=${productSlug}`);
+                const response = await fetch(`http://localhost:3000/api/wishlists`, {
+                    headers: { Cookie: document.cookie, 'Content-Type': 'application/json' },
+                });
                 const wishlistItems = await response.json();
-                if (wishlistItems.some((item: { slug: string }) => item.slug === productSlug)) {
+                if (wishlistItems?.some((item: { slug: string }) => item.slug === product.slug)) {
                     setIsInWishlist(true);
                 }
             } catch (error) {
@@ -26,14 +25,23 @@ export default function WishlistButton({ productSlug }: WishlistButtonProps) {
         }
 
         checkWishlist();
-    }, [productSlug]);
+    }, [product]);
 
-    const handleWishlistAction = async () => {
+    const handleWishlistAction = async (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         setLoading(true);
         try {
-            const url = `http://localhost:3001/wishlist?slug=${productSlug}`;
+            const url = `http://localhost:3000/api/wishlists`;
             const method = isInWishlist ? "DELETE" : "POST";
-            const response = await fetch(url, { method });
+            const productId = product._id
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cookie': document.cookie
+                },
+                body: JSON.stringify({ productId }),
+            });
 
             if (!response.ok) {
                 throw new Error(`Failed to ${isInWishlist ? "remove" : "add"} item from wishlist`);
@@ -46,6 +54,7 @@ export default function WishlistButton({ productSlug }: WishlistButtonProps) {
             setLoading(false);
         }
     };
+
 
     return (
         <button

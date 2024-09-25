@@ -4,38 +4,30 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-
-export type product = {
-    name: string
-    slug: string
-    description: string
-    excerpt: string
-    price: number
-    tags: string[]
-    thumbnail: string
-    images: string[]
-    createdAt: string
-    updatedAt: string
-}
+import { ProductTypes } from '@/types';
 
 export default function FeaturedProducts() {
 
-    const [products, setProducts] = useState<product[]>([]);
+    const [products, setProducts] = useState<ProductTypes[]>([]);
 
     async function fetchPosts() {
-        const response = await fetch('http://localhost:3001/products', {
-            // cache: "no-cache"
-        }); if (!response.ok) {
-            throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
+        try {
+            const response = await fetch('http://localhost:3000/api/products');
 
-        setProducts(data.sort(() => 0.5 - Math.random()).slice(0, 6));
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const data = await response.json();
+            setProducts(data.sort(() => 0.5 - Math.random()).slice(0, 6));
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
     }
 
     useEffect(() => {
         fetchPosts()
-    },[])
+    }, [])
 
     return (
         <div className="my-8 mx-60">

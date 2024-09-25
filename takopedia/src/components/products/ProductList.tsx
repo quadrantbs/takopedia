@@ -1,11 +1,11 @@
 // takopedia\src\components\products\ProductList.tsx
 "use client";
 
+import { ProductTypes } from '@/types';
 import ProductItem from './ProductItem';
-import { product } from '../home/FeaturedProducts';
 
 interface ProductListProps {
-    products: product[];
+    products: ProductTypes[];
 }
 
 export default function ProductList({ products }: ProductListProps) {

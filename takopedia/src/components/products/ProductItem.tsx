@@ -3,11 +3,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { product } from '../home/FeaturedProducts';
 import WishlistButton from '../wishlist/WishlistButton';
+import { ProductTypes } from '@/types';
 
 interface ProductItemProps {
-    product: product;
+    product: ProductTypes;
 }
 
 export default function ProductItem({ product }: ProductItemProps) {
@@ -24,9 +24,13 @@ export default function ProductItem({ product }: ProductItemProps) {
                     />
                 </div>
                 <h3 className="text-lg font-bold text-white mt-4 truncate">{product.name}</h3>
-                <p className="text-green-400 text-sm mt-2">Rp {product.price}</p>
+                <p className="text-green-400 text-sm mt-2">{product.price.toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 2,
+                })}</p>
                 <div className="py-4">
-                    <WishlistButton productSlug={product.slug} />
+                    <WishlistButton product={product} />
                 </div>
             </div>
         </Link>

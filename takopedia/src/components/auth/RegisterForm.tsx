@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { showSuccess } from '@/utils/alerts';
+import { showError, showSuccess } from '@/utils/alerts';
 import Link from 'next/link';
 
 export default function RegisterForm() {
@@ -18,23 +18,25 @@ export default function RegisterForm() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3001/auth/register', {
+            const response = await fetch('http://localhost:3000/api/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ name, email, username, password }),
             });
-
             if (!response.ok) {
-                throw new Error('Registration failed. Please check your details.');
+                const data = await response.json();
+                return showError(data)
             }
-
+            
             const data = await response.json();
+            console.log(data)
             showSuccess('Registration successful! Redirecting to login...');
-            console.log(data);
             router.push('/login');
 
+        } catch (error) {
+            console.log(error)
         } finally {
             setLoading(false);
         }
@@ -58,20 +60,6 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="email" className="block text-white text-sm font-bold mb-2">
-                        Email
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                    />
-                </div>
-
-                <div className="mb-4">
                     <label htmlFor="username" className="block text-white text-sm font-bold mb-2">
                         Username
                     </label>
@@ -80,6 +68,20 @@ export default function RegisterForm() {
                         id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="email" className="block text-white text-sm font-bold mb-2">
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                         required
                     />
@@ -112,7 +114,7 @@ export default function RegisterForm() {
                 <div className="text-center mt-4">
                     <p className="text-white">
                         <Link href="/login" className="text-green-400 hover:underline">
-                        Already have an account? Login here
+                            Already have an account? Login here
                         </Link>
                     </p>
                 </div>

@@ -20,7 +20,6 @@ export default function FeaturedProducts() {
             }
 
             const data = (await response.json()).products;
-            console.log(data)
             setProducts(data?.sort(() => 0.5 - Math.random()).slice(0, 6));
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -46,9 +45,13 @@ export default function FeaturedProducts() {
                         />
                         <div className="p-4">
                             <h3 className="text-lg font-semibold text-white truncate">{product.name}</h3>
-                            <p className="text-green-600 font-bold mb-4">Rp {product.price}</p>
+                            <p className="text-green-600 font-bold mb-4">Rp {product.price.toLocaleString('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 2,
+                            })}</p>
                             <Link href={`/products/${product.slug}`} className="block w-full text-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-300">
-                                    View Product
+                                View Product
                             </Link>
                         </div>
                     </div>

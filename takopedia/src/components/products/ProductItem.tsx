@@ -30,9 +30,9 @@ export default function ProductItem({ product }: ProductItemProps) {
                     minimumFractionDigits: 2,
                 })}</p>
                 <div className="py-4">
-                    <WishlistButton product={product} onWishlistChange={function (): void {
-                        throw new Error('Function not implemented.');
-                    } } />
+                    <WishlistButton product={product} onWishlistChange={
+                        async () => { return}
+                    } />
                 </div>
             </div>
         </Link>

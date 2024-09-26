@@ -7,7 +7,6 @@ export default function ProtectedComponent({
     children: React.ReactNode
 }>) {
     const isLogin = cookies().has("token");
-    console.log(isLogin)
 
     if (!isLogin) {
         return (

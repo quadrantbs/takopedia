@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import { z } from 'zod';
 
 export type ProductTypes = {
+    isWishlisted: boolean;
     _id: ObjectId
     name: string
     slug: string

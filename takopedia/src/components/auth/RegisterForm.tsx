@@ -30,10 +30,9 @@ export default function RegisterForm() {
                 const data = await response.json();
                 return showError(data)
             }
-            
+
             const data = await response.json();
-            console.log(data)
-            showSuccess('Registration successful! Redirecting to login...');
+            showSuccess(data.message);
             router.push('/login');
 
         } catch (error) {

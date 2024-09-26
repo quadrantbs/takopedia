@@ -7,6 +7,7 @@ import WishlistButton from '@/components/wishlist/WishlistButton';
 import { ProductTypes } from '@/types';
 import { Metadata } from 'next';
 import { baseUrl } from '@/utils/helpers';
+import { cookies } from 'next/headers';
 
 interface ProductDetailProps {
     params: {
@@ -39,8 +40,22 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
 
 export default async function ProductDetailPage({ params }: ProductDetailProps) {
     const { slug } = params;
-    const response = await fetch(`${baseUrl}/api/products/${slug}`);
+    const response = await fetch(`${baseUrl}/api/products/${slug}`,{
+        cache:"no-store"
+    });
     const product: ProductTypes = await response.json();
+    const responseWishlist = await fetch(`${baseUrl}/api/wishlists`, {
+        cache:"no-store",
+        headers: {
+            'Cookie': cookies().toString()
+        },
+        next:{
+            tags:["wishlists"]
+        }
+    });
+    const dataWishlist = await responseWishlist.json();
+    const productIds = dataWishlist.map((item: ProductTypes) => (item._id));
+    const updatedProduct = { ...product, isWishlisted: productIds.includes(product._id) }
 
     if (!product) {
         return notFound();
@@ -63,9 +78,11 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
                         })}
                     </p>
                     <div className="py-4">
-                        <WishlistButton product={product} onWishlistChange={function (): void {
-                            throw new Error('Function not implemented.');
-                        } } />
+                        <WishlistButton product={updatedProduct} onWishlistChange={
+                            async () => {
+                                "use server"
+                                return;
+                            }} />
                     </div>
                 </div>
             </div>

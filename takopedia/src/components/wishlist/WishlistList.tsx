@@ -21,6 +21,9 @@ export default function WishlistList() {
                 throw new Error("Failed to fetch wishlist");
             }
             const data = await response.json();
+            data.forEach((e: ProductTypes) => {
+                e.isWishlisted = true
+            });
             setWishlist(data);
         } catch (error) {
             console.error('Error fetching wishlist:', error);

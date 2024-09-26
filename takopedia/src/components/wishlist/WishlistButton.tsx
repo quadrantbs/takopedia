@@ -3,34 +3,20 @@
 "use client";
 
 import { ProductTypes } from "@/types";
+import { updateWishlistCache } from "@/utils/actions";
 import { baseUrl } from "@/utils/helpers";
 import { useState, useEffect, MouseEvent } from "react";
 
 interface WishlistButtonProps {
     product: ProductTypes;
-    onWishlistChange: () => void; 
+    onWishlistChange: () => void;
 }
 
 export default function WishlistButton({ product, onWishlistChange }: WishlistButtonProps) {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [loading, setLoading] = useState(false);
-
     useEffect(() => {
-        async function checkWishlist() {
-            try {
-                const response = await fetch(`${baseUrl}/api/wishlists`, {
-                    headers: { Cookie: document.cookie, 'Content-Type': 'application/json' },
-                });
-                const wishlistItems = await response.json();
-                if (wishlistItems?.some((item: { slug: string }) => item.slug === product.slug)) {
-                    setIsInWishlist(true);
-                }
-            } catch (error) {
-                console.error("Error checking wishlist", error);
-            }
-        }
-
-        checkWishlist();
+        setIsInWishlist(product.isWishlisted)
     }, [product]);
 
     const handleWishlistAction = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -52,6 +38,8 @@ export default function WishlistButton({ product, onWishlistChange }: WishlistBu
             if (!response.ok) {
                 throw new Error(`Failed to ${isInWishlist ? "remove" : "add"} item from wishlist`);
             }
+
+            updateWishlistCache()
 
             setIsInWishlist(!isInWishlist);
             onWishlistChange();

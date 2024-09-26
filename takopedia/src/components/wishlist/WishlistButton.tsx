@@ -3,16 +3,22 @@
 "use client";
 
 import { ProductTypes } from "@/types";
+import { baseUrl } from "@/utils/helpers";
 import { useState, useEffect, MouseEvent } from "react";
 
+interface WishlistButtonProps {
+    product: ProductTypes;
+    onWishlistChange: () => void; 
+}
 
-export default function WishlistButton({ product }: { product: ProductTypes }) {
+export default function WishlistButton({ product, onWishlistChange }: WishlistButtonProps) {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         async function checkWishlist() {
             try {
-                const response = await fetch(`http://localhost:3000/api/wishlists`, {
+                const response = await fetch(`${baseUrl}/api/wishlists`, {
                     headers: { Cookie: document.cookie, 'Content-Type': 'application/json' },
                 });
                 const wishlistItems = await response.json();
@@ -31,9 +37,9 @@ export default function WishlistButton({ product }: { product: ProductTypes }) {
         e.preventDefault();
         setLoading(true);
         try {
-            const url = `http://localhost:3000/api/wishlists`;
+            const url = `${baseUrl}/api/wishlists`;
             const method = isInWishlist ? "DELETE" : "POST";
-            const productId = product._id
+            const productId = product._id;
             const response = await fetch(url, {
                 method,
                 headers: {
@@ -48,13 +54,13 @@ export default function WishlistButton({ product }: { product: ProductTypes }) {
             }
 
             setIsInWishlist(!isInWishlist);
+            onWishlistChange();
         } catch (error) {
             console.error(`Error ${isInWishlist ? "removing" : "adding"} from wishlist`, error);
         } finally {
             setLoading(false);
         }
     };
-
 
     return (
         <button

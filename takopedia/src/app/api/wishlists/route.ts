@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { WishlistModel } from '@/db/models/wishlists';
 import { ObjectId } from 'mongodb';
 import { ProductModel } from '@/db/models/products';
+import { handleError } from '@/utils/ErrorHandler';
 
 export async function POST(request: Request) {
     try {
@@ -18,8 +19,8 @@ export async function POST(request: Request) {
 
         await WishlistModel.addToWishlist(userId, productId);
         return NextResponse.json({ message: 'Product added to wishlist' });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error) {
+        return handleError(error)
     }
 }
 
@@ -35,8 +36,8 @@ export async function DELETE(request: Request) {
 
         await WishlistModel.removeFromWishlist(userId, productId);
         return NextResponse.json({ message: 'Product removed from wishlist' });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error) {
+        return handleError(error)
     }
 }
 
@@ -49,7 +50,7 @@ export async function GET(request: Request) {
             productIds.map(productId => ProductModel.findById(productId))
         );
         return NextResponse.json(products);
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error) {
+        return handleError(error)
     }
 }

@@ -6,6 +6,7 @@ import React from 'react';
 import WishlistButton from '@/components/wishlist/WishlistButton';
 import { ProductTypes } from '@/types';
 import { Metadata } from 'next';
+import { baseUrl } from '@/utils/helpers';
 
 interface ProductDetailProps {
     params: {
@@ -15,7 +16,7 @@ interface ProductDetailProps {
 
 export async function generateMetadata({ params }: ProductDetailProps): Promise<Metadata> {
     const { slug } = params;
-    const response = await fetch(`http://localhost:3000/api/products/${slug}`);
+    const response = await fetch(`${baseUrl}/api/products/${slug}`);
     const product: ProductTypes = await response.json();
     return {
         title: product?.name,
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
         openGraph: {
             title: product?.name,
             description: product?.description,
-            url: `http://localhost:3000/products/${slug}`,
+            url: `${baseUrl}/products/${slug}`,
             images: [
                 {
                     url: product?.thumbnail,
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
 
 export default async function ProductDetailPage({ params }: ProductDetailProps) {
     const { slug } = params;
-    const response = await fetch(`http://localhost:3000/api/products/${slug}`);
+    const response = await fetch(`${baseUrl}/api/products/${slug}`);
     const product: ProductTypes = await response.json();
 
     if (!product) {
@@ -62,7 +63,9 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
                         })}
                     </p>
                     <div className="py-4">
-                        <WishlistButton product={product} />
+                        <WishlistButton product={product} onWishlistChange={function (): void {
+                            throw new Error('Function not implemented.');
+                        } } />
                     </div>
                 </div>
             </div>

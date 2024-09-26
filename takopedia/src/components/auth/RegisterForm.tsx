@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { showError, showSuccess } from '@/utils/alerts';
 import Link from 'next/link';
+import { baseUrl } from '@/utils/helpers';
 
 export default function RegisterForm() {
     const [name, setName] = useState('');
@@ -18,7 +19,7 @@ export default function RegisterForm() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/api/users/register', {
+            const response = await fetch(`${baseUrl}/api/users/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

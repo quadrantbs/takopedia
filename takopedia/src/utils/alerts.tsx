@@ -1,9 +1,5 @@
 import Swal from 'sweetalert2';
 
-// export function hideLoading() {
-//   Swal.close();
-// }
-
 export function showSuccess(message: string) {
   return (
     Swal.fire({

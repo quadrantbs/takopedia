@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { showError, showSuccess } from '@/utils/alerts';
 import Link from 'next/link';
 import { saveCookies } from '@/utils/actions';
+import { baseUrl } from '@/utils/helpers';
 
 export default function LoginForm() {
     const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export default function LoginForm() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/api/users/login', {
+            const response = await fetch(`${baseUrl}/api/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,3 +1,5 @@
+// takopedia/src/components/wishlist/WishlistItem.tsx
+
 "use client";
 
 import Image from "next/image";
@@ -7,9 +9,10 @@ import { ProductTypes } from "@/types";
 
 interface WishlistItemProps {
   product: ProductTypes;
+  onWishlistChange: () => void;
 }
 
-export default function WishlistItem({ product }: WishlistItemProps) {
+export default function WishlistItem({ product, onWishlistChange }: WishlistItemProps) {
   return (
     <Link href={`/products/${product.slug}`}>
       <div className="border border-gray-700 bg-gray-800 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out cursor-pointer group">
@@ -31,7 +34,7 @@ export default function WishlistItem({ product }: WishlistItemProps) {
           })}
         </p>
         <div className="py-4">
-          <WishlistButton product={product} />
+          <WishlistButton product={product} onWishlistChange={onWishlistChange} />
         </div>
       </div>
     </Link>

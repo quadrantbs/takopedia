@@ -4,6 +4,7 @@
 
 import { ProductTypes } from "@/types";
 import { updateWishlistCache } from "@/utils/actions";
+import { showError } from "@/utils/alerts";
 import { baseUrl } from "@/utils/helpers";
 import { useState, useEffect, MouseEvent } from "react";
 
@@ -36,7 +37,9 @@ export default function WishlistButton({ product, onWishlistChange }: WishlistBu
             });
 
             if (!response.ok) {
-                throw new Error(`Failed to ${isInWishlist ? "remove" : "add"} item from wishlist`);
+                const data = await response.json()
+                showError(data)
+                throw new Error(`Failed to ${isInWishlist ? "remove" : "add"} item from wishlist; ${data}`);
             }
 
             updateWishlistCache()

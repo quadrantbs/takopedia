@@ -40,22 +40,27 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
 
 export default async function ProductDetailPage({ params }: ProductDetailProps) {
     const { slug } = params;
-    const response = await fetch(`${baseUrl}/api/products/${slug}`,{
-        cache:"no-store"
+    const response = await fetch(`${baseUrl}/api/products/${slug}`, {
+        cache: "no-store"
     });
     const product: ProductTypes = await response.json();
     const responseWishlist = await fetch(`${baseUrl}/api/wishlists`, {
-        cache:"no-store",
+        cache: "no-store",
         headers: {
             'Cookie': cookies().toString()
         },
-        next:{
-            tags:["wishlists"]
+        next: {
+            tags: ["wishlists"]
         }
     });
-    const dataWishlist = await responseWishlist.json();
-    const productIds = dataWishlist.map((item: ProductTypes) => (item._id));
-    const updatedProduct = { ...product, isWishlisted: productIds.includes(product._id) }
+    let updatedProduct
+    if (!responseWishlist.ok) {
+        updatedProduct = product
+    } else {
+        const dataWishlist = await responseWishlist.json();
+        const productIds = dataWishlist.map((item: ProductTypes) => (item._id));
+        updatedProduct = { ...product, isWishlisted: productIds.includes(product._id) }
+    }
 
     if (!product) {
         return notFound();

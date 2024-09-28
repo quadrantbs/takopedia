@@ -11,7 +11,6 @@ export async function POST(request: Request) {
         const data = await request.json()
         const { productId } = data;
         const userId = String(request.headers.get('x-user-id'));
-
         const isInWishlist = await WishlistModel.isProductInWishlist(userId, productId);
         if (isInWishlist) {
             return NextResponse.json({ message: 'Product already in wishlist' }, { status: 400 });

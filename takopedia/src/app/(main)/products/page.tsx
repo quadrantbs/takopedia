@@ -16,9 +16,12 @@ export default function ProductsPage() {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [wishlistProductIds, setWishlistProductIds] = useState<string[]>([]);
-
     async function fetchWishlist() {
         try {
+            const isLoggedIn = document.cookie.split(';').some((cookie) => cookie.trim().startsWith('token='));
+            if (!isLoggedIn) {
+                return null
+            }
             const response = await fetch(`${baseUrl}/api/wishlists`, {
                 method: 'GET',
                 headers: {
